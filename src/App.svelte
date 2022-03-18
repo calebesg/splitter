@@ -1,20 +1,20 @@
 <script>
 	const values = {
-		bill: 0,
-		tips: 0,
-		peoples: 0,
-	}
+		bill: "",
+		tips: "",
+		peoples: "",
+	};
 	let amount = 0;
 	let total = 0;
-  
+
 	const taxes = [5, 10, 15, 25, 50];
 
 	let resetIsVisible = false;
 
 	function cleanForm() {
-		values.bill = 0;
-		values.tips = 0;
-		values.peoples = 0;
+		values.bill = "";
+		values.tips = "";
+		values.peoples = "";
 
 		total = 0;
 		amount = 0;
@@ -23,7 +23,7 @@
 	}
 
 	function changeValue(field, value) {
-		values[field] = value;
+		values[field] = Number(value);
 		calculate();
 	}
 
@@ -51,93 +51,104 @@
 
 		return true;
 	}
-
 </script>
 
 <main>
-	<h1 class="title">SPLI<br>TTER</h1>
+	<h1 class="title">SPLI<br />TTER</h1>
 	<div class="card">
-		<form>
-			<label for="bill">Bill</label>
-			<input
-				id="bill"
-				class="field"
-				type="number"
-				value={values.bill}
-				min="1"
-				step="0.1"
-				on:input={ e => changeValue('bill', e.target.value) }
-			/>
-		
-			<label for="tips">Select Tip %</label>
-			<ul class="tips" id="tips">
-				{#each taxes as tax}
-					<li class="tips-item">
-						<button 
-							type="button" 
-							on:click={ () => changeValue('tips',tax) }
-						>
-							{tax}%
-						</button>
+		<form id="calculator">
+			<div class="input-group">
+				<label for="bill">Bill</label>
+				<input
+					id="bill"
+					class="field"
+					type="number"
+					min="1"
+					step="0.1"
+					placeholder="0"
+					on:input={(e) => changeValue("bill", e.target.value)}
+				/>
+			</div>
+
+			<div class="input-group">
+				<label for="tips">Select Tip %</label>
+				<ul class="tips" id="tips">
+					{#each taxes as tax}
+						<li class="tips-item">
+							<button type="button" on:click={() => changeValue("tips", tax)}>
+								{tax}%
+							</button>
+						</li>
+					{/each}
+
+					<li>
+						<input
+							id="custom"
+							class="field"
+							aria-label="Insira um valor customizado"
+							type="number"
+							min="1"
+							step="0.5"
+							placeholder="Custom"
+							on:input={(e) => changeValue("tips", e.target.value)}
+						/>
 					</li>
-				{/each}
-				
-				<li>
-					<input 
-						id="custom"
-						class="field"
-						aria-label="Insira um valor customizado"
-						type="number"
-						min="1"
-						step="0.5"
-						value={ values.tips === 0 && '' }
-						placeholder="Custom"
-						on:input={ e => changeValue('tips', e.target.value) }
-					/>
-				</li>
-			</ul>
-		
-			<label for="peoples">Number of peoples</label>
-			<input
-				id="peoples"
-				class="field"
-				type="number"
-				value={values.peoples}
-				min="1"
-				step="1"
-				on:input={ e => changeValue('peoples', e.target.value) }
-			/>	
+				</ul>
+			</div>
+
+			<div class="input-group">
+				<div class="input-header">
+					<label for="peoples">Number of peoples</label>
+					<small
+						class={values.peoples === 0
+							? "message-error"
+							: "message-error hidden"}
+					>
+						Can`t be zero
+					</small>
+				</div>
+				<input
+					id="peoples"
+					class={values.peoples === 0 ? "field error" : "field"}
+					type="number"
+					min="0"
+					step="1"
+					placeholder="0"
+					on:input={(e) => changeValue("peoples", e.target.value)}
+				/>
+			</div>
 		</form>
-	
+
 		<div class="display-wrap">
 			<ul class="display">
 				<li class="display-item">
 					<h3 class="display-title">
-						Tip Amount 
+						Tip Amount
 						<small>/ person</small>
 					</h3>
 					<p id="amount" class="display-value">
-						<img src="images/icon-dollar.svg" alt="" aria-hidden="true">
-						<span>{ amount ? amount : '0.00'}</span>
+						<img src="images/icon-dollar.svg" alt="" aria-hidden="true" />
+						<span>{amount ? amount : "0.00"}</span>
 					</p>
 				</li>
 				<li class="display-item">
 					<h3 class="display-title">
-						Total 
+						Total
 						<small>/ person</small>
 					</h3>
 					<p id="total" class="display-value">
-						<img src="images/icon-dollar.svg" alt="" aria-hidden="true">
-						<span>{ total ? total : '0.00'}</span>
+						<img src="images/icon-dollar.svg" alt="" aria-hidden="true" />
+						<span>{total ? total : "0.00"}</span>
 					</p>
 				</li>
 			</ul>
-	
+
 			<button
 				type="reset"
-				disabled={ resetIsVisible ? '' : 'disabled' }
-				on:click={ cleanForm }>
-
+				form="calculator"
+				disabled={resetIsVisible ? "" : "disabled"}
+				on:click={cleanForm}
+			>
 				RESET
 			</button>
 		</div>
@@ -168,38 +179,64 @@
 		border-top-right-radius: 1.25rem;
 	}
 
-	form {
+	#calculator {
 		padding: 0.5rem 0.5rem 0;
 	}
 
-	label {
-		color: var(--dark-grayish-cyan);
+	.input-group + .input-group {
 		margin-top: 2.25rem;
+	}
+
+	.input-group label {
+		color: var(--dark-grayish-cyan);
 		margin-bottom: 0.625rem;
 		display: inline-block;
 	}
 
-	label:first-of-type {
-		margin-top: 0;
+	.input-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
-  
-	.field {
+
+	.input-header .message-error {
+		color: #cc7763;
+	}
+
+	.message-error.hidden {
+		opacity: 0;
+		display: none;
+	}
+
+	.input-group .field {
 		text-align: right;
 		font-size: 1.5rem;
+		padding: 0 1rem;
+		appearance: textfield;
 		color: var(--dark-grayish-cyan);
 		background-color: var(--very-light-grayish-cyan);
 	}
 
-	.field::placeholder {
+	.input-group .field:focus {
+		cursor: pointer;
+		border: 3px solid var(--strong-cyan);
+		outline: transparent;
+	}
+
+	.input-group .field.error {
+		border: 3px solid #cc7763;
+	}
+
+	.input-group .field::placeholder {
 		font-size: 1.25rem;
 	}
 
 	.tips {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(3, 3rem);
-    gap: 1rem;
-  }
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: repeat(3, 3rem);
+		gap: 1rem;
+	}
 
 	.tips button {
 		width: 100%;
@@ -208,7 +245,7 @@
 		color: var(--white);
 		border-radius: 0.25rem;
 		cursor: pointer;
-		transition: all .3s;
+		transition: all 0.3s;
 	}
 
 	.tips button:hover {
@@ -257,16 +294,15 @@
 	.display-wrap button {
 		background-color: var(--strong-cyan);
 		color: var(--very-dark-cyan);
-		transition: background-color .3s;
+		transition: background-color 0.3s;
 	}
-	
+
 	.display-wrap button:not(:disabled):hover {
 		cursor: pointer;
 		background-color: #9fe8df;
 	}
 
 	.display-wrap button:disabled {
-		opacity: .3;
+		opacity: 0.3;
 	}
-
 </style>

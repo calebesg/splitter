@@ -300,11 +300,11 @@
 
 	.tips button:hover {
 		color: var(--very-dark-cyan);
-		background-color: var(--strong-cyan);
+		background-color: #9fe8df;
 	}
 
 	.tips button.active {
-		background-color: #9fe8df;
+		background-color: var(--strong-cyan);
 		color: var(--very-dark-cyan);
 	}
 
@@ -364,7 +364,8 @@
 	}
 
 	.display-wrap button:disabled {
-		opacity: 0.3;
+		background-color: #0d686d;
+		color: #045b62;
 	}
 
 	@media (min-width: 60rem) {

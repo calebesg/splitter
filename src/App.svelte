@@ -1,4 +1,6 @@
 <script>
+	import formatCurrency from "./Utils/formatCurrency";
+
 	const values = {
 		bill: "",
 		tips: "",
@@ -24,32 +26,36 @@
 
 	function changeValue(field, value) {
 		values[field] = Number(value);
-		calculate();
+		calculateTip();
 	}
 
-	function calculate() {
-		const areFilled = validateFields();
+	function calculateTip() {
+		try {
+			validateFields();
 
-		if (areFilled === false) {
-			return false;
+			const { bill, tips, peoples } = values;
+			total = bill * (tips / 100 + 1);
+			amount = total / peoples;
+
+			total = formatCurrency(total);
+			amount = formatCurrency(amount);
+
+			resetIsVisible = true;
+		} catch (error) {
+			if (error.message == "nullable") amount = 0;
 		}
-
-		const { bill, tips, peoples } = values;
-
-		total = bill * (tips / 100 + 1);
-		amount = total / peoples;
-
-		resetIsVisible = true;
 	}
 
 	function validateFields() {
 		const { bill, tips, peoples } = values;
 
-		if (peoples === 0 || bill === 0 || tips === 0) {
-			return false;
+		if (peoples === "" || bill === "" || tips === "") {
+			throw new Error("empty");
 		}
 
-		return true;
+		if (peoples === 0) {
+			throw new Error("nullable");
+		}
 	}
 </script>
 
@@ -212,9 +218,12 @@
 		text-align: right;
 		font-size: 1.5rem;
 		padding: 0 1rem;
-		appearance: textfield;
 		color: var(--dark-grayish-cyan);
 		background-color: var(--very-light-grayish-cyan);
+
+		appearance: textfield;
+		-webkit-appearance: textfield;
+		-moz-appearance: textfield;
 	}
 
 	.input-group .field:focus {
@@ -229,6 +238,7 @@
 
 	.input-group .field::placeholder {
 		font-size: 1.25rem;
+		color: var(--dark-grayish-cyan);
 	}
 
 	.tips {
@@ -251,6 +261,12 @@
 	.tips button:hover {
 		color: var(--very-dark-cyan);
 		background-color: var(--strong-cyan);
+	}
+
+	.tips .field::placeholder {
+		font-size: 1.25rem;
+		color: var(--very-dark-cyan);
+		opacity: 0.8;
 	}
 
 	.display-wrap {

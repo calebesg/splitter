@@ -104,7 +104,7 @@
 
 			<div class="input-group">
 				<div class="input-header">
-					<label for="peoples">Number of peoples</label>
+					<label for="peoples">Number of People</label>
 					<small
 						class={values.peoples === 0
 							? "message-error"
@@ -217,7 +217,7 @@
 	.input-group .field {
 		text-align: right;
 		font-size: 1.5rem;
-		padding: 0 1rem;
+		padding-right: 1rem;
 		color: var(--dark-grayish-cyan);
 		background-color: var(--very-light-grayish-cyan);
 
@@ -237,7 +237,6 @@
 	}
 
 	.input-group .field::placeholder {
-		font-size: 1.25rem;
 		color: var(--dark-grayish-cyan);
 	}
 
@@ -264,7 +263,6 @@
 	}
 
 	.tips .field::placeholder {
-		font-size: 1.25rem;
 		color: var(--very-dark-cyan);
 		opacity: 0.8;
 	}
@@ -286,6 +284,7 @@
 
 	.display-item .display-title {
 		color: var(--white);
+		font-size: 1rem;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
@@ -320,5 +319,48 @@
 
 	.display-wrap button:disabled {
 		opacity: 0.3;
+	}
+
+	@media (min-width: 60rem) {
+		.card {
+			width: 57.5rem;
+			border-radius: 1.25rem;
+			padding: 2rem;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 2rem;
+		}
+
+		#calculator {
+			padding: 1rem;
+		}
+
+		.title {
+			margin-top: 0;
+			margin-bottom: 80px;
+		}
+
+		.tips {
+			grid-template-columns: repeat(3, 1fr);
+			grid-template-rows: 3rem 3rem;
+			gap: 1rem;
+		}
+
+		.display-wrap {
+			padding: 3.875rem 2.5rem 2.5rem;
+			margin-top: 0;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+		}
+
+		.display-value {
+			font-size: 3rem;
+		}
+
+		.display-value img {
+			height: 2.5rem;
+			margin-right: 0.25rem;
+		}
 	}
 </style>

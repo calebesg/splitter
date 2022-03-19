@@ -67,7 +67,8 @@
 </script>
 
 <main>
-	<h1 class="title">SPLI<br />TTER</h1>
+	<h1 class="sr-only">Tip Calculator application</h1>
+	<img class="title" src="images/logo.svg" alt="Splitter" />
 	<div class="card">
 		<form id="calculator">
 			<div class="input-group">
@@ -81,6 +82,12 @@
 					step="0.1"
 					placeholder="0"
 					on:input={(e) => setBill(e.target.value)}
+				/>
+				<img
+					class="dollar"
+					src="images/icon-dollar.svg"
+					alt=""
+					aria-hidden="true"
 				/>
 			</div>
 
@@ -134,6 +141,7 @@
 					placeholder="0"
 					on:input={(e) => setPeople(e.target.value)}
 				/>
+				<img src="images/icon-person.svg" alt="" aria-hidden="true" />
 			</div>
 		</form>
 
@@ -182,6 +190,13 @@
 		justify-content: center;
 	}
 
+	.sr-only {
+		widows: 1px;
+		height: 1px;
+		opacity: 0;
+		overflow: hidden;
+	}
+
 	.title {
 		margin: 2.5rem 0;
 		color: var(--dark-grayish-cyan);
@@ -224,6 +239,20 @@
 	.message-error.hidden {
 		opacity: 0;
 		display: none;
+	}
+
+	.input-group {
+		position: relative;
+	}
+
+	.input-group img {
+		position: absolute;
+		left: 1rem;
+		bottom: 1rem;
+	}
+
+	.input-group img.dollar {
+		filter: grayscale(81%);
 	}
 
 	.input-group .field {

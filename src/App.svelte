@@ -92,7 +92,8 @@
 			</div>
 
 			<div class="input-group">
-				<label for="tips">Select Tip %</label>
+				<!-- svelte-ignore a11y-label-has-associated-control -->
+				<label>Select Tip %</label>
 				<ul class="tips" id="tips">
 					{#each tips as tip, index}
 						<li class="tips-item">
@@ -148,20 +149,20 @@
 		<div class="display-wrap">
 			<ul class="display">
 				<li class="display-item">
-					<h3 class="display-title">
+					<h2 class="display-title">
 						Tip Amount
 						<small>/ person</small>
-					</h3>
+					</h2>
 					<p class="display-value">
 						<img src="images/icon-dollar.svg" alt="" aria-hidden="true" />
 						<span>{amount ? amount : "0.00"}</span>
 					</p>
 				</li>
 				<li class="display-item">
-					<h3 class="display-title">
+					<h2 class="display-title">
 						Total
 						<small>/ person</small>
-					</h3>
+					</h2>
 					<p class="display-value">
 						<img src="images/icon-dollar.svg" alt="" aria-hidden="true" />
 						<span>{total ? total : "0.00"}</span>

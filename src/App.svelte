@@ -1,62 +1,69 @@
 <script>
 	import formatCurrency from "./Utils/formatCurrency";
 
-	const values = {
-		bill: "",
-		tips: "",
-		peoples: "",
-	};
-	let amount = 0;
-	let total = 0;
+	const tips = [5, 10, 15, 25, 50];
 
-	const taxes = [5, 10, 15, 25, 50];
+	let bill = "";
+	let tip = "";
+	let people = "";
+	let amount = "";
+	let total = "";
 
+	let tipSelectedIndex;
 	let resetIsVisible = false;
 
-	function cleanForm() {
-		values.bill = "";
-		values.tips = "";
-		values.peoples = "";
+	const validateFields = () => {
+		if (people === "" || bill === "" || tip === "") {
+			throw new Error("empty");
+		}
 
-		total = 0;
-		amount = 0;
+		if (people === "0") {
+			throw new Error("nullable");
+		}
+	};
 
-		resetIsVisible = false;
-	}
-
-	function changeValue(field, value) {
-		values[field] = Number(value);
-		calculateTip();
-	}
-
-	function calculateTip() {
+	const calculate = () => {
 		try {
 			validateFields();
 
-			const { bill, tips, peoples } = values;
-			total = bill * (tips / 100 + 1);
-			amount = total / peoples;
+			total = bill * (tip / 100 + 1);
+			amount = total / people;
 
 			total = formatCurrency(total);
 			amount = formatCurrency(amount);
 
 			resetIsVisible = true;
 		} catch (error) {
-			if (error.message == "nullable") amount = 0;
+			if (error.message == "nullable") amount = "";
 		}
-	}
+	};
 
-	function validateFields() {
-		const { bill, tips, peoples } = values;
+	const setBill = (value) => {
+		bill = value;
+		calculate();
+	};
 
-		if (peoples === "" || bill === "" || tips === "") {
-			throw new Error("empty");
-		}
+	const setPeople = (value) => {
+		people = value;
+		calculate();
+	};
 
-		if (peoples === 0) {
-			throw new Error("nullable");
-		}
-	}
+	const setTip = (value, index = "") => {
+		tip = value;
+		tipSelectedIndex = index;
+		calculate();
+	};
+
+	const clearData = () => {
+		bill = "";
+		tip = "";
+		people = "";
+		total = "";
+		amount = "";
+
+		tipSelectedIndex = "";
+		resetIsVisible = false;
+	};
 </script>
 
 <main>
@@ -68,21 +75,26 @@
 				<input
 					id="bill"
 					class="field"
+					value={bill}
 					type="number"
 					min="1"
 					step="0.1"
 					placeholder="0"
-					on:input={(e) => changeValue("bill", e.target.value)}
+					on:input={(e) => setBill(e.target.value)}
 				/>
 			</div>
 
 			<div class="input-group">
 				<label for="tips">Select Tip %</label>
 				<ul class="tips" id="tips">
-					{#each taxes as tax}
+					{#each tips as tip, index}
 						<li class="tips-item">
-							<button type="button" on:click={() => changeValue("tips", tax)}>
-								{tax}%
+							<button
+								class={tipSelectedIndex === index && "active"}
+								type="button"
+								on:click={() => setTip(tip, index)}
+							>
+								{tip}%
 							</button>
 						</li>
 					{/each}
@@ -91,12 +103,13 @@
 						<input
 							id="custom"
 							class="field"
+							value={tipSelectedIndex === "" ? tip : ""}
 							aria-label="Insira um valor customizado"
 							type="number"
 							min="1"
 							step="0.5"
 							placeholder="Custom"
-							on:input={(e) => changeValue("tips", e.target.value)}
+							on:input={(e) => setTip(e.target.value)}
 						/>
 					</li>
 				</ul>
@@ -106,21 +119,20 @@
 				<div class="input-header">
 					<label for="peoples">Number of People</label>
 					<small
-						class={values.peoples === 0
-							? "message-error"
-							: "message-error hidden"}
+						class={people === "0" ? "message-error" : "message-error hidden"}
 					>
 						Can`t be zero
 					</small>
 				</div>
 				<input
 					id="peoples"
-					class={values.peoples === 0 ? "field error" : "field"}
+					class={people === "0" ? "field error" : "field"}
 					type="number"
+					value={people}
 					min="0"
 					step="1"
 					placeholder="0"
-					on:input={(e) => changeValue("peoples", e.target.value)}
+					on:input={(e) => setPeople(e.target.value)}
 				/>
 			</div>
 		</form>
@@ -132,7 +144,7 @@
 						Tip Amount
 						<small>/ person</small>
 					</h3>
-					<p id="amount" class="display-value">
+					<p class="display-value">
 						<img src="images/icon-dollar.svg" alt="" aria-hidden="true" />
 						<span>{amount ? amount : "0.00"}</span>
 					</p>
@@ -142,7 +154,7 @@
 						Total
 						<small>/ person</small>
 					</h3>
-					<p id="total" class="display-value">
+					<p class="display-value">
 						<img src="images/icon-dollar.svg" alt="" aria-hidden="true" />
 						<span>{total ? total : "0.00"}</span>
 					</p>
@@ -153,7 +165,7 @@
 				type="reset"
 				form="calculator"
 				disabled={resetIsVisible ? "" : "disabled"}
-				on:click={cleanForm}
+				on:click={clearData}
 			>
 				RESET
 			</button>
@@ -262,6 +274,11 @@
 		background-color: var(--strong-cyan);
 	}
 
+	.tips button.active {
+		background-color: #9fe8df;
+		color: var(--very-dark-cyan);
+	}
+
 	.tips .field::placeholder {
 		color: var(--very-dark-cyan);
 		opacity: 0.8;
@@ -338,6 +355,10 @@
 		.title {
 			margin-top: 0;
 			margin-bottom: 80px;
+		}
+
+		.input-group .field {
+			padding-right: 0;
 		}
 
 		.tips {
